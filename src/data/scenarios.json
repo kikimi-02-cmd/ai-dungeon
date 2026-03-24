@@ -1,0 +1,649 @@
+[
+  {
+    "id": "lost-crown",
+    "name": "失われた王冠",
+    "emoji": "⚔",
+    "description": "中世ファンタジー。王国の命運を握る王冠を取り戻せ。",
+    "startNodeId": "lc-start",
+    "nodes": [
+      {
+        "id": "lc-start",
+        "text": "あなたは王国最後の騎士として、盗まれた王冠を取り戻す使命を帯びている。深い霧に包まれた「迷いの森」の入り口に立つと、二手の道が現れた。左の道からは清かな水音が聞こえ、右の道からは微かに火の明かりが見える。背後からは王国の城が遠く見えた。腰の剣を握りしめ、あなたは決断する。",
+        "choices": [
+          { "text": "左の道を進む（水音がする）", "nextNodeId": "lc-left", "statusEffect": {} },
+          { "text": "右の道を進む（火の明かりがある）", "nextNodeId": "lc-right" },
+          { "text": "森の入り口で周囲を調べる", "nextNodeId": "lc-investigate" }
+        ]
+      },
+      {
+        "id": "lc-left",
+        "text": "左の道を進むと、小川が現れた。澄んだ水面に月光が映り込んでいる。そこで、傷ついた妖精が岸辺に倒れていた。「助けてくれ……盗賊団に追われている」と弱々しく呟く。妖精を助ければ道案内をしてくれるかもしれないが、盗賊団が追ってくるリスクもある。急いで先を急ぐべきか、助けるべきか迷うあなた。",
+        "choices": [
+          { "text": "妖精を助けて手当てをする", "nextNodeId": "lc-fairy-help", "statusEffect": { "addFlag": "helped_fairy" } },
+          { "text": "声をかけず先を急ぐ", "nextNodeId": "lc-bandit-ambush" }
+        ]
+      },
+      {
+        "id": "lc-right",
+        "text": "右の道を進むと、廃れた山小屋が見えた。窓から火の明かりが漏れている。扉をこっそり覗くと、荒くれた盗賊が三人、地図を広げて話し合っていた。「王冠は『古の塔』にある。明日の夜明けに取りに行く」と言っている。あなたは盗賊たちの話を盗み聞きしてしまった。彼らはまだ気づいていない。",
+        "choices": [
+          { "text": "今のうちに一人を奇襲して情報を得る", "nextNodeId": "lc-bandit-fight" },
+          { "text": "黙って立ち去り古の塔を目指す", "nextNodeId": "lc-tower-path", "statusEffect": { "addFlag": "knows_tower" } }
+        ]
+      },
+      {
+        "id": "lc-investigate",
+        "text": "入り口周辺を調べると、地面に新しい足跡が残っていた。大きな足跡と小さな足跡が入り混じり、「古の塔」方向へと続いている。また、木の幹に短剣が刺さっており、その柄には王国の紋章が刻まれていた。誰かがここで戦ったのだろうか。短剣を抜き取ると、重みがずっしりと手に伝わってきた。",
+        "choices": [
+          { "text": "足跡を辿って森の奥へ進む", "nextNodeId": "lc-tower-path", "statusEffect": { "addItem": "王国の短剣", "addFlag": "knows_tower" } },
+          { "text": "左の道（水音の方向）へ進む", "nextNodeId": "lc-left" },
+          { "text": "右の道（火の明かりの方向）へ進む", "nextNodeId": "lc-right" }
+        ]
+      },
+      {
+        "id": "lc-fairy-help",
+        "text": "傷ついた妖精に薬草を与え、傷の手当てをしてやった。妖精は目に涙をためながら「ありがとう……お礼に道を教えよう。王冠は盗賊の頭目が持ち、今夜『古の塔』で儀式を行おうとしている。でも塔には罠がある。これを持っていけ」と言い、小さな光の石を渡してくれた。",
+        "choices": [
+          { "text": "光の石を受け取り古の塔へ急ぐ", "nextNodeId": "lc-tower-path", "statusEffect": { "addItem": "光の石", "addFlag": "knows_tower" } }
+        ]
+      },
+      {
+        "id": "lc-bandit-ambush",
+        "text": "妖精を助けずに進もうとした瞬間、「待て！」と鋭い声が飛んだ。茂みから盗賊が三人飛び出してきた。妖精を助けなかったため、盗賊に追われていると思い込んであなたを敵とみなしたのだ。剣を抜いて応戦するが、多勢に無勢。腕に切り傷を負ってしまった。",
+        "choices": [
+          { "text": "全力で戦い、突破口を開く", "nextNodeId": "lc-bandit-fight", "statusEffect": { "hpChange": -20 } },
+          { "text": "逃げ出して別の道を探す", "nextNodeId": "lc-tower-path", "statusEffect": { "hpChange": -10 } }
+        ]
+      },
+      {
+        "id": "lc-bandit-fight",
+        "text": "剣を抜いて盗賊と戦った。一人を倒すと、残りの二人は逃げ出した。倒した盗賊から古びた地図を取り上げると、「古の塔」への道が赤い線で示されていた。また、盗賊のポーチには回復薬が入っていた。体のあちこちが痛むが、前進しなければならない。",
+        "choices": [
+          { "text": "地図を頼りに古の塔へ向かう", "nextNodeId": "lc-tower-path", "statusEffect": { "addItem": "回復薬", "addFlag": "knows_tower", "hpChange": -15 } }
+        ]
+      },
+      {
+        "id": "lc-tower-path",
+        "text": "森を抜けると、丘の上に「古の塔」が姿を現した。月明かりに照らされた石造りの塔は不気味な威圧感を放っている。塔の入り口には二人の見張りが立っている。上を見ると、三階の窓から薄い明かりが漏れている。どこから侵入すべきか、あなたは素早く状況を観察した。",
+        "choices": [
+          { "text": "正面から見張りと戦って突入する", "nextNodeId": "lc-tower-front", "statusEffect": { "hpChange": -20 } },
+          { "text": "裏手に回り、隠し扉を探す", "nextNodeId": "lc-tower-secret" },
+          { "text": "光の石を使って見張りを引き付ける", "nextNodeId": "lc-tower-secret", "requiredItem": "光の石", "statusEffect": { "removeItem": "光の石" } }
+        ]
+      },
+      {
+        "id": "lc-tower-front",
+        "text": "見張りと激しく戦い、ついに塔の中に入ることができた。だが、戦闘で体力を大きく消耗してしまった。塔内はぐるぐると螺旋階段が続いており、上から重い足音が聞こえてくる。頭目がいるのは最上階のはずだ。途中で隠し部屋を見つけた。中には宝箱があり、その中に回復薬が入っていた。",
+        "choices": [
+          { "text": "回復薬を飲んで最上階を目指す", "nextNodeId": "lc-final-boss", "statusEffect": { "hpChange": 30 } },
+          { "text": "回復薬は温存して急いで登る", "nextNodeId": "lc-final-boss" }
+        ]
+      },
+      {
+        "id": "lc-tower-secret",
+        "text": "裏手に回ると、蔦に隠れた古い扉を見つけた。鍵はかかっていない。静かに中に入ると、見張りに気づかれずに塔の内部に侵入することができた。螺旋階段を慎重に登りながら、最上階に近づく。頭目の声が聞こえてきた。「王冠の力を使えば、この王国は私のものだ……」そして最上階の扉の前に立った。",
+        "choices": [
+          { "text": "扉を勢いよく蹴破って突入する", "nextNodeId": "lc-final-boss", "statusEffect": { "hpChange": -5 } },
+          { "text": "そっと扉を開けて様子を見る", "nextNodeId": "lc-final-boss" }
+        ]
+      },
+      {
+        "id": "lc-final-boss",
+        "text": "最上階の広間に踏み込むと、黒いローブをまとった盗賊の頭目が王冠を手にしていた。「邪魔をするか……！」と頭目は魔力を帯びた剣を抜き放つ。王冠が発する金色の光があたりを照らす中、激しい一騎打ちが始まった。頭目は強く、あなたは追い詰められていく。しかし、王冠の光が一瞬、頭目の動きを乱した！",
+        "choices": [
+          { "text": "王国の短剣で一気に斬り込む", "nextNodeId": "lc-end-good", "requiredItem": "王国の短剣" },
+          { "text": "妖精の加護を信じて渾身の一撃を放つ", "nextNodeId": "lc-end-good", "requiredFlag": "helped_fairy" },
+          { "text": "全力で剣を振るう", "nextNodeId": "lc-end-normal", "statusEffect": { "hpChange": -30 } }
+        ]
+      },
+      {
+        "id": "lc-forest-trap",
+        "text": "古の塔へ向かう道の途中、森の中に奇妙な静寂が訪れた。鳥の声も虫の声も消え、木々の間から目が光っている。罠だ——気づいた瞬間、足元のロープが締まり、木の上に吊り上げられてしまった。もがくと余計に締まる。冷静になって周囲を見ると、刃物が一本地面に落ちていた。手が届くかもしれない。",
+        "choices": [
+          { "text": "体を揺らして刃物に手を届かせる", "nextNodeId": "lc-tower-path", "statusEffect": { "hpChange": -10 } },
+          { "text": "助けを呼ぶ", "nextNodeId": "lc-fairy-help", "requiredFlag": "helped_fairy" }
+        ]
+      },
+      {
+        "id": "lc-end-good",
+        "text": "王国の紋章を宿した短剣が頭目の魔剣を弾き飛ばし、勝利を収めた。王冠を手にしたあなたは、塔から降りると朝日が昇り始めていた。王冠を王に返還すると、国民が歓声を上げた。あなたは「王冠の継承者」として歴史に名を刻んだ。ふたりの人生で最も誇り高き瞬間だった。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "good",
+        "endingName": "王冠の継承者"
+      },
+      {
+        "id": "lc-end-normal",
+        "text": "激しい死闘の末、かろうじて頭目を打ち倒した。満身創痍のあなたは王冠を回収し、なんとか王都へ戻ることができた。王冠は無事に王の元へ届いたが、あなたの体は深い傷を負っていた。人々はあなたを「傷だらけの英雄」と呼んだ。王国に平和は戻ったが、勝利の代償は小さくなかった。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "normal",
+        "endingName": "傷だらけの英雄"
+      },
+      {
+        "id": "lc-end-bad",
+        "text": "頭目との戦いで力尽き、意識が遠のいていく。目を覚ますと牢屋の中だった。王冠は頭目の手に渡り、儀式が完成してしまった。王国には闇の呪いが降り注ぎ、人々は苦しんだ。あなたは自分の無力さを嘆きながら、暗い牢の中で時を過ごした。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "bad",
+        "endingName": "闇に呑まれた王国"
+      }
+    ]
+  },
+  {
+    "id": "space-drift",
+    "name": "星間漂流記",
+    "emoji": "🚀",
+    "description": "SF・宇宙。宇宙船が遭難。生き延びて地球へ帰れ。",
+    "startNodeId": "sd-start",
+    "nodes": [
+      {
+        "id": "sd-start",
+        "text": "突然の爆発音とともに、宇宙船「オリオン号」が宙に舞った。警報が鳴り響く中、あなたは辛うじて船内に残された。エンジンは停止、通信システムは半壊。外を見ると、未知の惑星が近くに浮かんでいる。残り燃料は30%。酸素残量は72時間分。救難信号を出すか、自力で惑星に降りるか、判断が迫られていた。",
+        "choices": [
+          { "text": "救難信号を発信して救助を待つ", "nextNodeId": "sd-signal" },
+          { "text": "未知の惑星に緊急着陸を試みる", "nextNodeId": "sd-planet-land" },
+          { "text": "船内を点検して状況を把握する", "nextNodeId": "sd-inspect" }
+        ]
+      },
+      {
+        "id": "sd-inspect",
+        "text": "船内を点検すると、予備の酸素タンクとサバイバルキットを発見した。また、エンジンの補修パーツが一部残っていることがわかった。格納庫には小型の脱出ポッドが残っており、これを使えば惑星への降下も可能だ。通信モジュールの一部が生きており、断続的ながら信号を受信できそうだった。",
+        "choices": [
+          { "text": "脱出ポッドで惑星に降りる", "nextNodeId": "sd-planet-land", "statusEffect": { "addItem": "サバイバルキット" } },
+          { "text": "救難信号を発信する", "nextNodeId": "sd-signal", "statusEffect": { "addItem": "予備酸素タンク" } }
+        ]
+      },
+      {
+        "id": "sd-signal",
+        "text": "救難信号を発信してから6時間。ついに応答があった。しかし、それは人類の船ではなかった。「我らはゼルク連合艦隊。貴船を確認。接触を許可するか？」と機械的な翻訳音声が流れた。異星人との接触。人類初の公式コンタクトかもしれない。彼らが友好的か敵対的かはわからない。",
+        "choices": [
+          { "text": "接触を許可して交渉する", "nextNodeId": "sd-alien-contact" },
+          { "text": "接触を断り、自力で脱出する", "nextNodeId": "sd-planet-land", "statusEffect": { "hpChange": -10 } }
+        ]
+      },
+      {
+        "id": "sd-planet-land",
+        "text": "脱出ポッドに乗り込み、惑星への降下を開始した。大気圏突入の熱と振動に耐えながら、緑色の惑星の表面に不時着した。ポッドは使用不能になったが、生きていた。外に出ると、見慣れない植物が生い茂り、紫色の空に二つの月が浮かんでいる。遠くに構造物のようなものが見えた。",
+        "choices": [
+          { "text": "構造物に向かって歩く", "nextNodeId": "sd-alien-base" },
+          { "text": "ポッド付近に留まり、修理を試みる", "nextNodeId": "sd-repair", "statusEffect": { "hpChange": -5 } }
+        ]
+      },
+      {
+        "id": "sd-alien-contact",
+        "text": "ゼルク連合の船が接近し、ドッキングした。扉が開くと、青い皮膚を持つ人型の生命体が現れた。「我らは探検者。貴方の文明に興味がある。協力すれば地球への帰路を提供しよう」と流暢な日本語で語りかけてきた。彼らが地球の言語を知っていることに驚愕しながら、あなたは状況を飲み込もうとした。",
+        "choices": [
+          { "text": "情報を提供して協力関係を結ぶ", "nextNodeId": "sd-alien-ally", "statusEffect": { "addFlag": "alien_ally" } },
+          { "text": "慎重に、最低限の情報のみ共有する", "nextNodeId": "sd-alien-cautious" }
+        ]
+      },
+      {
+        "id": "sd-repair",
+        "text": "ポッドの修理を試みたが、損傷が激しく手には負えなかった。周囲を探索すると、金属質の鉱石と、水源を発見した。飢えと渇きは凌げそうだ。しかし、惑星の夜は極寒になる。何か避難できる場所を探さなければならない。遠くに構造物のシルエットが見えた。ここに留まるか、移動するか。",
+        "choices": [
+          { "text": "構造物へ向かう", "nextNodeId": "sd-alien-base" },
+          { "text": "ポッドを避難所として使う", "nextNodeId": "sd-night-survive", "statusEffect": { "hpChange": -20 } }
+        ]
+      },
+      {
+        "id": "sd-alien-base",
+        "text": "構造物は広大な建造物で、ゼルク連合の前哨基地だった。入り口でセンサーが作動し、内部から先ほどの青い異星人が現れた。「我らはあなたの種族をモニタリングしていた。あなたが最初の直接接触者だ」と言った。基地内には食糧と医療設備があり、体を癒すことができる。",
+        "choices": [
+          { "text": "歓待を受け入れ、協力関係を結ぶ", "nextNodeId": "sd-alien-ally", "statusEffect": { "addFlag": "alien_ally", "hpChange": 30 } },
+          { "text": "情報だけ得て脱出の手段を探す", "nextNodeId": "sd-escape-plan" }
+        ]
+      },
+      {
+        "id": "sd-night-survive",
+        "text": "ポッド内で夜を明かした。気温は予想を超えて低下し、体が震えた。しかし朝になると、地平線から太陽が昇り始め、暖かさが戻ってきた。遠くに光の点が見えた。何かが動いている。接近するにつれ、それが乗り物だとわかった。ゼルク連合の偵察機が近づいてきた。",
+        "choices": [
+          { "text": "手を振って助けを求める", "nextNodeId": "sd-alien-base", "statusEffect": { "hpChange": 10 } },
+          { "text": "隠れて様子を見る", "nextNodeId": "sd-escape-plan", "statusEffect": { "hpChange": -10 } }
+        ]
+      },
+      {
+        "id": "sd-alien-ally",
+        "text": "ゼルク連合との友好関係が成立した。彼らはあなたの宇宙船を修理し、地球への帰路を提供してくれることになった。出発前に、彼らの科学者たちとの意見交換が行われ、互いの文明への理解が深まった。「地球はユニークな星だ。我々は友人として見守ろう」と彼らは言った。あなたは大使として地球へ帰還する。",
+        "choices": [
+          { "text": "感謝を伝えて帰還の途につく", "nextNodeId": "sd-end-good" }
+        ]
+      },
+      {
+        "id": "sd-alien-cautious",
+        "text": "最低限の情報のみ共有したところ、異星人たちは理解を示した。「慎重さは賢明だ。我らも同じ」と言い、修理を手伝ってくれた。ただし、地球への正確な位置情報は教えてもらえなかった。自力で帰路を見つけなければならないが、船は動く。",
+        "choices": [
+          { "text": "星図を頼りに地球を目指す", "nextNodeId": "sd-end-normal" },
+          { "text": "もう一度交渉して帰路を教えてもらう", "nextNodeId": "sd-alien-ally", "statusEffect": { "addFlag": "alien_ally" } }
+        ]
+      },
+      {
+        "id": "sd-escape-plan",
+        "text": "基地内の情報を密かに収集し、脱出計画を立てた。しかし、格納庫に向かう途中で警備ロボットに発見されてしまった。「許可なき立ち入りを確認」とロボットが言い、包囲される。しかし、そこへ先ほどの異星人が現れ「見逃してやれ」と命じた。「なぜ逃げる必要がある？我らは敵ではない」と言った。",
+        "choices": [
+          { "text": "誤解を解いて協力する", "nextNodeId": "sd-alien-ally", "statusEffect": { "addFlag": "alien_ally" } },
+          { "text": "強行突破して脱出する", "nextNodeId": "sd-end-normal", "statusEffect": { "hpChange": -30 } }
+        ]
+      },
+      {
+        "id": "sd-debris-field",
+        "text": "帰路の途中、大規模な小惑星帯に突入してしまった。岩石が猛スピードで飛び交い、船のシールドが赤くなっている。操縦桿を握りしめ、岩石を避けながら進む。突破口は二つ——左ルートは密度が高いが距離が短い。右ルートは遠いが安全そうだ。燃料残量は15%。選択の余地は少ない。",
+        "choices": [
+          { "text": "危険だが短い左ルートを突き進む", "nextNodeId": "sd-end-good", "statusEffect": { "hpChange": -20 } },
+          { "text": "安全な右ルートを選ぶ", "nextNodeId": "sd-end-normal" }
+        ]
+      },
+      {
+        "id": "sd-end-good",
+        "text": "ゼルク連合の護衛のもと、「オリオン号」改め「友好の翼」は地球圏に帰還した。あなたがもたらした異星人との接触の報は世界中に広まり、人類の宇宙史に新たなページが刻まれた。あなたは「星間大使」として称えられ、地球と宇宙の架け橋となった。空には、どこかゼルク連合の船が光っているように見えた。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "good",
+        "endingName": "星間大使の帰還"
+      },
+      {
+        "id": "sd-end-normal",
+        "text": "困難の末、なんとか地球圏へ帰還することができた。異星人との接触の記憶は鮮明だが、証拠が乏しく世界に信じてもらえない部分もある。しかし、あなたが持ち帰ったデータは科学界に新たな謎をもたらした。いつかまた、あの星たちを訪れる日が来るかもしれない。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "normal",
+        "endingName": "漂流者の帰還"
+      },
+      {
+        "id": "sd-end-bad",
+        "text": "酸素が尽き始め、意識が遠のく。窓の外には美しい星々が広がっていた。救助はついに来なかった。しかし最後の瞬間、通信機に声が響いた。「我らが見守っている」——異星人の声だった。あなたの遺志は宇宙に残り、いつか誰かに届くだろう。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "bad",
+        "endingName": "星の海に眠る"
+      }
+    ]
+  },
+  {
+    "id": "ghost-mansion",
+    "name": "幽霊屋敷の夜",
+    "emoji": "👻",
+    "description": "ホラー。不気味な洋館から夜明けまで生き延びろ。",
+    "startNodeId": "gm-start",
+    "nodes": [
+      {
+        "id": "gm-start",
+        "text": "肝試しに訪れた廃洋館。友人たちはどこかへ消え、あなたひとりが玄関ホールに取り残されていた。外は嵐になり、扉は風でバタンと閉じられた。スマートフォンの電波は圏外。懐中電灯の光だけが頼りだ。ホールには三つの扉がある。左は書斎、正面は階段、右は食堂へ続いているようだった。ドンッ、と何かが上の階で落ちた音がした。",
+        "choices": [
+          { "text": "書斎に入って調べる（左の扉）", "nextNodeId": "gm-study" },
+          { "text": "階段を上って音の原因を確かめる（正面）", "nextNodeId": "gm-upstairs" },
+          { "text": "食堂に入る（右の扉）", "nextNodeId": "gm-dining" }
+        ]
+      },
+      {
+        "id": "gm-study",
+        "text": "書斎に入ると、埃をかぶった本棚が壁を埋め尽くしていた。懐中電灯で照らすと、一冊だけ新しい本が床に落ちている。拾い上げると「この館の記録」と書かれた日記だった。読み進めると、この館では30年前に一家惨殺事件が起きており、家族の霊が今も彷徨っていると書いてある。窓の外に白い人影が見えた気がした。",
+        "choices": [
+          { "text": "日記を持って詳しく読む", "nextNodeId": "gm-diary-clue", "statusEffect": { "addItem": "館の日記" } },
+          { "text": "窓の外の人影を確認しに行く", "nextNodeId": "gm-window-ghost", "statusEffect": { "hpChange": -10 } }
+        ]
+      },
+      {
+        "id": "gm-upstairs",
+        "text": "軋む階段を慎重に登ると、廊下に出た。廊下の端に少女のシルエットが見える。振り返ると誰もいない。部屋の扉が一つ、自然に開いた。中から冷気が漏れてくる。廊下の反対側には窓があり、外の嵐が見える。少女の幻影が「ここから出られない……」と囁く声が聞こえた気がした。",
+        "choices": [
+          { "text": "開いた扉の部屋に入る", "nextNodeId": "gm-ghost-room" },
+          { "text": "少女の幻影を追う", "nextNodeId": "gm-ghost-girl", "statusEffect": { "hpChange": -15 } },
+          { "text": "引き返してホールを調べる", "nextNodeId": "gm-hall-clue" }
+        ]
+      },
+      {
+        "id": "gm-dining",
+        "text": "食堂は広く、長いテーブルに食器がそのまま残されていた。まるで食事の途中で全員が消えたかのようだ。食器には食べかけの食事がカビで覆われている。キャビネットを漁ると、懐中電灯の予備電池とマッチを見つけた。壁のカレンダーは30年前のままで止まっていた。奥の扉が微かに揺れている。",
+        "choices": [
+          { "text": "奥の扉を開ける", "nextNodeId": "gm-kitchen", "statusEffect": { "addItem": "マッチ" } },
+          { "text": "食堂を詳しく調べる", "nextNodeId": "gm-hall-clue" }
+        ]
+      },
+      {
+        "id": "gm-diary-clue",
+        "text": "日記を読み進めると、重要な記述を見つけた。「この館には地下への隠し扉がある。暖炉の横の燭台を回せば開く。地下には儀式部屋があり、そこで霊を鎮める方法が記されている」とあった。さらに「霊を安らかにするには、失われたロケットを持ち主のもとへ返すこと」と書かれていた。",
+        "choices": [
+          { "text": "暖炉を探しに階段へ向かう", "nextNodeId": "gm-hall-clue", "statusEffect": { "addFlag": "knows_secret" } },
+          { "text": "まず上の階を調べる", "nextNodeId": "gm-upstairs", "statusEffect": { "addFlag": "knows_secret" } }
+        ]
+      },
+      {
+        "id": "gm-window-ghost",
+        "text": "窓に近づこうとした瞬間、冷気が体を包み、何かに腕を掴まれた感覚がした。懐中電灯が点滅し、消えた。暗闇の中、白い手が見えた気がした。電灯を叩くと再び光り、人影は消えていた。腕に赤い指の痕が残っていた。体は震えているが、意識はある。",
+        "choices": [
+          { "text": "日記を持ってホールへ戻る", "nextNodeId": "gm-hall-clue" },
+          { "text": "ここで休んで落ち着く", "nextNodeId": "gm-study" }
+        ]
+      },
+      {
+        "id": "gm-ghost-room",
+        "text": "部屋に入ると、ベッドの上に古いロケット（locket）が置いてあった。開けると中に家族の写真が入っていた。母と父と少女の三人。これが行方不明になっていたロケットではないか？ 棚の上に儀式についての紙きれがあり「血のロケットを墓に返せ」と書いてあった。庭に墓があるのかもしれない。",
+        "choices": [
+          { "text": "ロケットを持って庭の墓を探す", "nextNodeId": "gm-garden", "statusEffect": { "addItem": "古いロケット", "addFlag": "has_locket" } },
+          { "text": "地下へ続く隠し扉を探す", "nextNodeId": "gm-hall-clue" }
+        ]
+      },
+      {
+        "id": "gm-ghost-girl",
+        "text": "少女の幻影を追うと、廊下の端で消えた。そこには壁のひび割れがあり、指で押すと暗い部屋に通じる隠し扉が開いた。中は小さな子供部屋で、人形が並んでいる。引き出しを開けると、古いロケットと書置きが入っていた。「ロケットをおかあさんの墓に返して」と幼い字で書かれていた。",
+        "choices": [
+          { "text": "ロケットを持って庭へ向かう", "nextNodeId": "gm-garden", "statusEffect": { "addItem": "古いロケット", "addFlag": "has_locket" } }
+        ]
+      },
+      {
+        "id": "gm-hall-clue",
+        "text": "ホールの暖炉の横に燭台を見つけた。日記の記述を思い出して回すと、カチリと音がして床が動き、地下への階段が現れた。地下は石造りで、蝋燭の灯りがぼんやりと照らしている。儀式部屋には石の台座があり、何かを置く窪みがあった。壁には「失われたものを返せば、眠りにつく」と彫られていた。",
+        "choices": [
+          { "text": "ロケットを台座に置く", "nextNodeId": "gm-ritual", "requiredItem": "古いロケット" },
+          { "text": "ロケットを探しに戻る（上の階へ）", "nextNodeId": "gm-upstairs" }
+        ]
+      },
+      {
+        "id": "gm-kitchen",
+        "text": "厨房に入ると、窓から庭が見えた。月明かりの中、石造りの墓石が並んでいる。裏口の扉は施錠されていたが、調理台の下に鍵が落ちていた。庭への出口を確保した。しかし庭から白い影が窓に近づいてきた。ガラス越しに顔が映る。ドロドロに崩れた白い顔が、こちらを見ている。",
+        "choices": [
+          { "text": "裏口から庭へ出る", "nextNodeId": "gm-garden", "statusEffect": { "addItem": "裏口の鍵", "hpChange": -10 } },
+          { "text": "見なかったことにして別の場所へ", "nextNodeId": "gm-hall-clue" }
+        ]
+      },
+      {
+        "id": "gm-garden",
+        "text": "嵐の中、ずぶ濡れになりながら庭へ出た。三つの墓石が並んでいる。名前を確認すると「愛するアンナへ」と刻まれた墓があった。墓の前に立つと、白い人影が現れた。それは穏やかな顔の女性だった。「……私のロケットを……」と囁く声がした。",
+        "choices": [
+          { "text": "ロケットを墓前に置く", "nextNodeId": "gm-end-good", "requiredItem": "古いロケット" },
+          { "text": "逃げ出して玄関から脱出を試みる", "nextNodeId": "gm-end-bad", "statusEffect": { "hpChange": -30 } },
+          { "text": "マッチで蝋燭を灯してお祈りする", "nextNodeId": "gm-end-normal", "requiredItem": "マッチ" }
+        ]
+      },
+      {
+        "id": "gm-ritual",
+        "text": "ロケットを石の台座に置くと、激しい振動が走り、館全体が揺れた。地下から白い光が立ち昇り、少女の霊が現れた。「やっと……やっと返してもらえた……ありがとう」と言い、光の粒となって消えていった。揺れが収まると、嵐も静まり始めた。外が明るくなっている。夜明けだ。",
+        "choices": [
+          { "text": "玄関から外へ出る", "nextNodeId": "gm-end-good" }
+        ]
+      },
+      {
+        "id": "gm-end-good",
+        "text": "霊が安らかに眠りにつくと、館の重苦しい空気が晴れた。夜が明け、嵐も去り、柔らかな朝日が差し込んできた。玄関の扉を開けると、消えていた友人たちが外で待っていた。「どこにいたんだよ！」と友人が駆け寄ってくる。あなたは一夜の出来事を語り始めた——誰も信じないかもしれないが。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "good",
+        "endingName": "霊を解放した者"
+      },
+      {
+        "id": "gm-end-normal",
+        "text": "蝋燭を灯してお祈りをすると、女性の霊は少しだけ穏やかな顔になった。「……まだ……完全には……」と言いかけて消えた。完全には霊を鎮めることができなかったが、夜明けとともに館の圧迫感は薄れた。玄関の鍵が自然に開き、外へ出ることができた。この体験は生涯忘れられない夜になった。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "normal",
+        "endingName": "夜明けの生還"
+      },
+      {
+        "id": "gm-end-bad",
+        "text": "恐怖に駆られて逃げ出そうとした瞬間、全身に寒気が走り、足がすくんだ。玄関まで辿り着いたが、扉が開かない。白い影が背後に迫る感覚があり、叫び声を上げて意識を失った。目が覚めると、外は明るく、友人たちに囲まれていた。どうやって外に出たのか、まったく記憶がない。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "bad",
+        "endingName": "記憶を失った夜"
+      }
+    ]
+  },
+  {
+    "id": "dragon-boy",
+    "name": "竜と旅する少年",
+    "emoji": "🐉",
+    "description": "ファンタジー冒険。傷ついた竜と共に旅し、世界を救え。",
+    "startNodeId": "db-start",
+    "nodes": [
+      {
+        "id": "db-start",
+        "text": "山の洞窟で、あなたは傷ついた小さな竜を見つけた。翼に矢が刺さっており、苦しそうに喘いでいる。周囲には竜狩りの痕跡がある。竜は人間を恐れてか、唸り声を上げてくる。しかし、その目には知性の光が宿っていた。このまま放置すれば竜は死んでしまうだろう。あなたはどうする？",
+        "choices": [
+          { "text": "恐怖を押さえて竜の手当てをする", "nextNodeId": "db-help", "statusEffect": { "addFlag": "dragon_bond" } },
+          { "text": "竜狩りに通報して報奨金を得る", "nextNodeId": "db-betray" },
+          { "text": "そっと見守り、竜が動けるか確認する", "nextNodeId": "db-observe" }
+        ]
+      },
+      {
+        "id": "db-help",
+        "text": "ゆっくりと近づき、竜に話しかけながら矢を抜いてやった。竜は最初暴れたが、やがて落ち着き、あなたの手をなめた。翌朝、竜は立ち上がり、あなたに頭を擦り付けてきた。友情の証だ。竜は「セラ」と名乗り、なんとあなたと話すことができた。「私を助けてくれた。一緒に旅をしよう」と言った。",
+        "choices": [
+          { "text": "セラと一緒に旅に出る", "nextNodeId": "db-journey-start", "statusEffect": { "addItem": "セラの鱗（お守り）" } }
+        ]
+      },
+      {
+        "id": "db-betray",
+        "text": "竜狩りギルドに通報すると、屈強な男たちが竜を捕縛した。報奨金を受け取ったが、竜の叫び声が耳に残り、夜も眠れなかった。数日後、捕獲した竜が逃げ出し、ギルドが壊滅したというニュースが入った。そして、セラがあなたを探しているという噂が広まった。",
+        "choices": [
+          { "text": "セラに謝りに行く", "nextNodeId": "db-observe", "statusEffect": { "hpChange": -20 } },
+          { "text": "逃げて別の町に移る", "nextNodeId": "db-end-bad" }
+        ]
+      },
+      {
+        "id": "db-observe",
+        "text": "距離を保って見守っていると、竜はゆっくりと立ち上がり、あなたを見つめた。瞳が緑色に輝き、頭の中に声が響いた。「……助けてくれるのか？」テレパシーだ。竜は人間の言葉を心で伝えることができるらしい。「私はセラ。竜狩りに追われて怪我をした。人間を信じていいのかわからない」と言った。",
+        "choices": [
+          { "text": "手当てをして信頼を示す", "nextNodeId": "db-help", "statusEffect": { "addFlag": "dragon_bond" } },
+          { "text": "食べ物だけ渡して立ち去る", "nextNodeId": "db-journey-start", "statusEffect": { "hpChange": -5 } }
+        ]
+      },
+      {
+        "id": "db-journey-start",
+        "text": "セラと共に旅を始めた。セラはまだ飛べないが、その竜の知恵と炎の息吹は心強い。旅の途中で、竜狩りギルドがセラを追っていることがわかった。さらに、王都では「黒竜の呪い」が広まり、人々が謎の病に倒れているという。セラによると、黒竜が目覚めたためらしい。",
+        "choices": [
+          { "text": "王都に向かって黒竜の情報を集める", "nextNodeId": "db-royal-city" },
+          { "text": "まず竜狩りギルドに対処する", "nextNodeId": "db-guild-fight" }
+        ]
+      },
+      {
+        "id": "db-royal-city",
+        "text": "王都に着くと、街は不穏な空気に包まれていた。人々が咳をしており、空には黒い雲が垂れ込めている。賢者の塔を訪ねると、老いた魔法使いが教えてくれた。「黒竜は古の封印が解けて目覚めた。封印を復活させるには、白き竜の炎と勇者の剣が必要だ」白き竜——それはセラのことかもしれない。",
+        "choices": [
+          { "text": "セラに話して封印の挑戦に向かう", "nextNodeId": "db-seal-quest", "statusEffect": { "addFlag": "knows_seal" } },
+          { "text": "賢者から封印の剣を借りる", "nextNodeId": "db-seal-quest", "statusEffect": { "addItem": "封印の剣", "addFlag": "knows_seal" } }
+        ]
+      },
+      {
+        "id": "db-guild-fight",
+        "text": "竜狩りギルドの拠点に乗り込むと、頭目が待ち構えていた。「その竜を渡せ。大金を出す」と言う。セラは頭目を睨みつけ、小さな炎を吹いた。交渉は決裂し、戦いになった。セラの炎と、あなたの剣で戦い、頭目を退けた。ギルドの動きは封じることができたが、消耗した。",
+        "choices": [
+          { "text": "王都へ向かい黒竜の情報を得る", "nextNodeId": "db-royal-city", "statusEffect": { "hpChange": -20 } }
+        ]
+      },
+      {
+        "id": "db-seal-quest",
+        "text": "黒竜の巣は北の山脈の奥にあった。近づくにつれ、周囲の植物が枯れ、空気が重くなる。セラは翼が完全に癒えており、ついに空を飛べるようになっていた。「一緒に戦おう」とセラは言った。黒竜の咆哮が山に響き渡り、地面が揺れた。いよいよ最後の戦いだ。",
+        "choices": [
+          { "text": "封印の剣とセラの炎で黒竜に挑む", "nextNodeId": "db-end-good", "requiredItem": "封印の剣" },
+          { "text": "セラの力だけで封印を復活させる", "nextNodeId": "db-end-normal", "requiredFlag": "dragon_bond" },
+          { "text": "黒竜に話しかけて対話を試みる", "nextNodeId": "db-end-normal" }
+        ]
+      },
+      {
+        "id": "db-market",
+        "text": "旅の途中、小さな町の市場に立ち寄った。セラは姿を変えるため、ローブで翼を隠している。市場では薬草や武器が売られており、旅の補給ができる。しかし、ふと気づくと「行方不明の白竜」の手配書が貼り出されていた。セラの似顔絵が描かれている。竜狩りがここまで追ってきているようだ。",
+        "choices": [
+          { "text": "薬草を買って急いで出発する", "nextNodeId": "db-seal-quest", "statusEffect": { "hpChange": 20 } },
+          { "text": "手配書を剥がして情報を探る", "nextNodeId": "db-guild-fight", "statusEffect": { "addFlag": "knows_guild" } }
+        ]
+      },
+      {
+        "id": "db-night-camp",
+        "text": "夜、焚き火のそばでセラと話した。「人間が怖かった。でも、あなたは違う」とセラは言い、炎の中に家族の記憶を映し出してくれた。竜の親と兄弟が、黒竜の呪いで眠りについている映像だった。「だから封印を復活させなければならない。でも一人ではできなかった」目に光るものがあった。あなたは固く約束した。",
+        "choices": [
+          { "text": "「必ず一緒に戦う」と誓う", "nextNodeId": "db-royal-city", "statusEffect": { "addFlag": "dragon_bond", "hpChange": 10 } }
+        ]
+      },
+      {
+        "id": "db-village-help",
+        "text": "道中の村が黒竜の呪いに侵されていた。咳をする子どもたちを見て、セラが炎を吐いた。竜の炎は呪いの霧を一時的に払うことができるらしく、子どもたちは少し楽になった。村長が「このお礼に」と、古い地図と回復薬を渡してくれた。地図には北の山脈への最短ルートが記されていた。",
+        "choices": [
+          { "text": "地図と回復薬を受け取り出発する", "nextNodeId": "db-seal-quest", "statusEffect": { "addItem": "封印の剣", "hpChange": 30 } }
+        ]
+      },
+      {
+        "id": "db-cave",
+        "text": "山道に入ると、巨大な洞窟の前に出た。中から竜の骸骨が見える。古い竜の墓場だ。セラが静かに言った。「ここは竜たちの聖地。黒竜が目覚めた原因も、この場所にある」洞窟の奥に向かうと、石に封印の紋様が刻まれていた。その石の前に、錆びた古い剣が突き刺さっていた。",
+        "choices": [
+          { "text": "剣を抜いて持っていく", "nextNodeId": "db-seal-quest", "statusEffect": { "addItem": "封印の剣", "addFlag": "knows_seal" } },
+          { "text": "セラに場所を記憶させて先を急ぐ", "nextNodeId": "db-seal-quest", "statusEffect": { "addFlag": "knows_seal" } }
+        ]
+      },
+      {
+        "id": "db-end-good",
+        "text": "封印の剣をかざし、セラが白炎を吐いた。二つの力が合わさると眩い光が放たれ、黒竜は封印の光に包まれて深い眠りについた。呪いが解け、王都の人々が回復し始めた。セラは人々の前で空に舞い上がり、白銀の鱗を輝かせた。「あなたが友でよかった」とセラは言った。竜と少年の伝説が生まれた。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "good",
+        "endingName": "竜と少年の伝説"
+      },
+      {
+        "id": "db-end-normal",
+        "text": "セラの炎と、あなたの勇気で黒竜を退けることができた。完全な封印には至らなかったが、黒竜は傷を負って逃げ去り、呪いの霧は薄れた。セラは「また戻ってくるかもしれない。でも次こそは」と言い、空へ飛んでいった。あなたはセラの背中を見送りながら、また会えると信じた。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "normal",
+        "endingName": "別れと再会の予感"
+      },
+      {
+        "id": "db-end-bad",
+        "text": "竜から逃げ続けた結果、黒竜の呪いが広まり、世界は混乱に陥った。あなたはひとり荒れた大地を彷徨い、後悔の念に苛まれた。どこかでセラの声が聞こえた気がした——「なぜ逃げたの？」。友を裏切った代償は大きかった。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "bad",
+        "endingName": "裏切りの代償"
+      }
+    ]
+  },
+  {
+    "id": "tokyo-mystery",
+    "name": "東京ミステリー",
+    "emoji": "🔍",
+    "description": "現代推理。東京で起きた連続失踪事件の真相を追え。",
+    "startNodeId": "tm-start",
+    "nodes": [
+      {
+        "id": "tm-start",
+        "text": "あなたは探偵事務所を営む私立探偵だ。依頼人の山田彩花が涙ながらに話す。「兄が三日前から行方不明なんです。警察は動いてくれなくて……」依頼人の兄・山田誠は渋谷のIT企業に勤めており、仕事帰りに消えた。手元には誠が最後に立ち寄ったカフェのレシートと、謎の暗号が書かれたメモがある。",
+        "choices": [
+          { "text": "最後に立ち寄ったカフェを調べる", "nextNodeId": "tm-cafe" },
+          { "text": "誠の職場のIT企業へ向かう", "nextNodeId": "tm-company" },
+          { "text": "メモの暗号を解読する", "nextNodeId": "tm-decode" }
+        ]
+      },
+      {
+        "id": "tm-cafe",
+        "text": "渋谷のカフェを訪ねると、若いウェイターが覚えていた。「その日、スーツの男性が来ました。一人で長時間いて、携帯で誰かと言い争っていたと思います。帰り際に『もう終わりにする』って言ってました」。またレシートをよく見ると、裏に6桁の数字「134679」が薄く書かれていた。さらに、カフェのWi-Fiログを借りると、接続先に不審なIPアドレスがあった。",
+        "choices": [
+          { "text": "不審なIPアドレスを調べる", "nextNodeId": "tm-ip-trace", "statusEffect": { "addItem": "IPアドレスメモ", "addFlag": "has_number" } },
+          { "text": "「もう終わりにする」の意味を考え、誠の自宅へ向かう", "nextNodeId": "tm-apartment" }
+        ]
+      },
+      {
+        "id": "tm-company",
+        "text": "誠が勤めるIT企業「ネクサスコード」を訪れると、同僚の田中が青ざめた顔で語った。「誠さん、最近社内の不正に気づいて、告発しようとしていたんです。上層部が裏で違法なデータ売買をしていて……」会社の金庫に証拠があるが、社長の指示で全データが消去されたという。田中はUSBメモリを手渡した。「誠さんが隠していたバックアップです」",
+        "choices": [
+          { "text": "USBの内容を確認する", "nextNodeId": "tm-usb-data", "statusEffect": { "addItem": "証拠USB", "addFlag": "company_secret" } },
+          { "text": "社長に直接話を聞く", "nextNodeId": "tm-president", "statusEffect": { "hpChange": -10 } }
+        ]
+      },
+      {
+        "id": "tm-decode",
+        "text": "メモの暗号を解読すると「シブヤ1-3-4、ロッカー6番、キー9」という文章が浮かび上がった。渋谷駅のコインロッカーの場所と番号を示しているようだ。ロッカーへ向かうと、鍵番号9を使って開けることができた。中には分厚い封筒があり、会社の不正取引の証拠書類と、誠から依頼人・彩花への手紙が入っていた。",
+        "choices": [
+          { "text": "証拠を持って警察へ行く", "nextNodeId": "tm-police", "statusEffect": { "addItem": "証拠書類", "addFlag": "company_secret" } },
+          { "text": "証拠を持ってIT企業の社長に直接対峙する", "nextNodeId": "tm-president", "statusEffect": { "addItem": "証拠書類", "addFlag": "company_secret" } }
+        ]
+      },
+      {
+        "id": "tm-ip-trace",
+        "text": "IPアドレスを追跡すると、港区のビルに辿り着いた。そのビルの登記を調べると、ネクサスコードの関連会社が入居していた。ビルの警備員に話を聞くと「最近、夜中に車が頻繁に出入りしている。地下に何かあるらしい」と言った。地下への入り口に6桁のパスコードが必要だった。",
+        "choices": [
+          { "text": "「134679」と入力する", "nextNodeId": "tm-underground", "requiredFlag": "has_number", "statusEffect": { "addFlag": "found_hideout" } },
+          { "text": "まず証拠を集めてから警察に頼む", "nextNodeId": "tm-police" }
+        ]
+      },
+      {
+        "id": "tm-apartment",
+        "text": "誠のアパートに向かうと、ドアに貼り紙があった。「中に入るな」と書いてある。しかし鍵が壊れており、入ることができた。部屋の中は荒らされていた。パソコンは持ち去られていたが、机の引き出しに折りたたまれたメモがあった。「地下施設。港区○○ビル。証拠は妹に」と書かれていた。",
+        "choices": [
+          { "text": "港区のビルへ急ぐ", "nextNodeId": "tm-underground", "statusEffect": { "addFlag": "found_hideout" } },
+          { "text": "まず警察に連絡する", "nextNodeId": "tm-police" }
+        ]
+      },
+      {
+        "id": "tm-usb-data",
+        "text": "USBの内容は暗号化されていたが、解析すると会社が違法に個人データを売買していた証拠が現れた。さらに、取引先の名簿に警察の幹部の名前があった。単純に警察に持ち込めない状況だ。正義感の強い誠がこれを暴こうとしたのは明らかだ。誠はどこかに監禁されているかもしれない。",
+        "choices": [
+          { "text": "港区のビルへ踏み込む", "nextNodeId": "tm-underground", "statusEffect": { "addFlag": "found_hideout" } },
+          { "text": "信頼できる新聞記者に情報を漏らす", "nextNodeId": "tm-police", "statusEffect": { "addFlag": "press_contact" } }
+        ]
+      },
+      {
+        "id": "tm-president",
+        "text": "社長室に乗り込むと、白髪の社長が動じずに言った。「山田誠の件か。彼は自分の首を絞めたんだ」と冷たく言い放った。突然、屈強な男が二人入ってきてあなたを押さえた。「証拠を持ってるなら吐いてもらおう」と社長が言う。捕まってしまったが、証拠USB を持っていれば手は残っている。",
+        "choices": [
+          { "text": "証拠USBを社長に突きつけて交渉する", "nextNodeId": "tm-underground", "requiredItem": "証拠USB", "statusEffect": { "addFlag": "found_hideout" } },
+          { "text": "隙を見て逃げ出す", "nextNodeId": "tm-underground", "statusEffect": { "hpChange": -25, "addFlag": "found_hideout" } }
+        ]
+      },
+      {
+        "id": "tm-police",
+        "text": "警察署に証拠を持ち込むと、担当刑事が動いてくれた。「これは大きな事件だ。港区のビルに踏み込む」と言い、捜索令状を取ることになった。翌朝、捜査が行われ、地下施設で複数の人が発見された。その中に山田誠がいた。やつれているが無事だった。",
+        "choices": [
+          { "text": "誠と再会する", "nextNodeId": "tm-end-good" }
+        ]
+      },
+      {
+        "id": "tm-underground",
+        "text": "地下施設に踏み込むと、薄暗い部屋に数人が監禁されていた。その中に山田誠がいた。「来てくれた……」と誠は言い、かすれた声で会社の全貌を語り始めた。「全部証拠にした。あとは世間に出すだけだ」施設の上から足音が聞こえる。残り時間は少ない。",
+        "choices": [
+          { "text": "証拠を持って脱出し、記者に渡す", "nextNodeId": "tm-end-good", "requiredFlag": "company_secret" },
+          { "text": "警察に連絡して脱出する", "nextNodeId": "tm-end-normal" },
+          { "text": "証拠なしで脱出を急ぐ", "nextNodeId": "tm-end-normal", "statusEffect": { "hpChange": -20 } }
+        ]
+      },
+      {
+        "id": "tm-informant",
+        "text": "調査を進めていると、見知らぬ人物からSNSにメッセージが届いた。「ネクサスコードについて知りたいなら、新宿の喫茶店に来い」。ためらいながらも指定の場所へ行くと、眼鏡をかけた初老の男性がいた。「私は元社員だ。内部告発しようとしたら解雇された」と言い、内部文書を渡してくれた。",
+        "choices": [
+          { "text": "内部文書を受け取り礼を言う", "nextNodeId": "tm-underground", "statusEffect": { "addItem": "証拠書類", "addFlag": "company_secret", "addFlag2": "found_hideout" } },
+          { "text": "罠の可能性を疑い断る", "nextNodeId": "tm-apartment", "statusEffect": { "hpChange": -5 } }
+        ]
+      },
+      {
+        "id": "tm-surveillance",
+        "text": "気づくと、後ろから黒いセダンがゆっくりと追跡している。会社の手の者か。早歩きでコンビニに入り、防犯カメラの死角へ逃げると、車は通り過ぎた。しかし緊張で心臓が激しく打っている。このまま調査を続けるか、一時撤退するか。スマホに依頼人・彩花から「何か進展はありますか？」とメッセージが来た。",
+        "choices": [
+          { "text": "構わず港区のビルへ向かう", "nextNodeId": "tm-underground", "statusEffect": { "addFlag": "found_hideout" } },
+          { "text": "警察に相談しながら安全に動く", "nextNodeId": "tm-police" }
+        ]
+      },
+      {
+        "id": "tm-end-good",
+        "text": "証拠とともに誠を救出し、記者会見で全てを公表した。ネクサスコードの社長は逮捕され、違法データ売買は世間に知られることとなった。依頼人の彩花は兄と再会し、涙を流して抱きしめた。「本当にありがとうございます」あなたの探偵事務所には評判が広まり、次々と依頼が舞い込んできた。真実は必ず日の目を見る。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "good",
+        "endingName": "真実を暴いた探偵"
+      },
+      {
+        "id": "tm-end-normal",
+        "text": "誠を救出することはできたが、証拠の多くは隠蔽されてしまった。社長は証拠不十分で釈放され、会社は名前を変えて存続した。ただ、誠は生きており、彩花との再会を果たすことができた。完全な解決とはいかなかったが、命を救えたことに意味はあった。また次の依頼が来るだろう。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "normal",
+        "endingName": "不完全な正義"
+      },
+      {
+        "id": "tm-end-bad",
+        "text": "調査の途中で組織に捕まり、証拠を奪われた。誠の行方もわからないまま、あなたは警告を受けて探偵業を廃業するよう脅された。依頼人の彩花は毎日電話をくれるが、報告できることは何もない。どこかで真実を知る者が動いてくれるのを信じるしかなかった。",
+        "choices": [],
+        "isEnding": true,
+        "endingType": "bad",
+        "endingName": "握り潰された真実"
+      }
+    ]
+  }
+]
