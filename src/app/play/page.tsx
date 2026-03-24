@@ -128,6 +128,7 @@ function PlayContent() {
             node={currentNode}
             status={playerStatus}
             nodeCount={nodeCount}
+            scenarioName={scenario.name}
             onReplay={() => {
               const name = playerStatus.name;
               const params = new URLSearchParams({ scenarioId: scenario.id, playerName: name });

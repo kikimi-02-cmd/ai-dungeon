@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { StoryNode, PlayerStatus } from '@/lib/types';
 import CrossPromo from '@/components/CrossPromo';
 
@@ -5,6 +8,7 @@ interface Props {
   node: StoryNode;
   status: PlayerStatus;
   nodeCount: number;
+  scenarioName: string;
   onReplay: () => void;
   onChangeScenario: () => void;
 }
@@ -16,10 +20,36 @@ const endingColors = {
 };
 
 const endingLabels = { good: 'GOOD END', normal: 'NORMAL END', bad: 'BAD END' };
+const endingShortLabels = { good: 'Good', normal: 'Normal', bad: 'Bad' };
 
-export default function EndingScreen({ node, status, nodeCount, onReplay, onChangeScenario }: Props) {
+export default function EndingScreen({ node, status, nodeCount, scenarioName, onReplay, onChangeScenario }: Props) {
+  const [copied, setCopied] = useState(false);
   const type = node.endingType ?? 'normal';
   const colors = endingColors[type];
+
+  const shareText = [
+    'AIダンジョン 🗡',
+    '',
+    `「${scenarioName}」${endingShortLabels[type]} End`,
+    '',
+    `エンディング: ${node.endingName ?? '？'}`,
+    '',
+    `HP: ${status.hp} / アイテム: ${status.items.length}個`,
+    '',
+    'https://ai-dungeon-coral.vercel.app/',
+  ].join('\n');
+
+  function handleShare() {
+    navigator.clipboard.writeText(shareText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {/* ignore */});
+  }
+
+  function handleXShare() {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 
   return (
     <div className={`bg-[#1E1533] border-2 ${colors.bg} rounded-2xl p-6 space-y-5`}>
@@ -43,6 +73,22 @@ export default function EndingScreen({ node, status, nodeCount, onReplay, onChan
         <p className="text-[#9CA3AF]">所持アイテム: <span className="text-[#F59E0B]">{status.items.join('、') || 'なし'}</span></p>
       </div>
 
+      {/* シェアボタン */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleShare}
+          className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-colors"
+        >
+          {copied ? 'コピーしました！' : '結果をシェア'}
+        </button>
+        <button
+          onClick={handleXShare}
+          className="flex-1 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-600 text-white font-bold text-sm transition-colors"
+        >
+          𝕏 でシェア
+        </button>
+      </div>
+
       {/* ボタン */}
       <div className="space-y-3">
         <button
@@ -59,9 +105,16 @@ export default function EndingScreen({ node, status, nodeCount, onReplay, onChan
         </button>
       </div>
 
-      {/* 広告枠 */}
-      <div className="text-center text-xs text-[#4C1D95] border border-dashed border-[#4C1D95] rounded p-2">
-        広告
+      {/* 広告 */}
+      <div className="overflow-hidden">
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client="ca-pub-9336081041068058"
+          data-ad-slot="auto"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
       </div>
 
       <CrossPromo />
