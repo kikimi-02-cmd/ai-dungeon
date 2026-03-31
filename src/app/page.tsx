@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getAllScenarios } from '@/lib/game';
 import { getSaveData } from '@/lib/storage';
 import { Scenario, SaveData } from '@/lib/types';
@@ -39,7 +40,16 @@ export default function HomePage() {
         <div className="text-center mb-8">
           <div className="text-6xl mb-3">🗡</div>
           <h1 className="text-3xl font-bold text-[#A78BFA] mb-2">AIダンジョン</h1>
-          <p className="text-[#9CA3AF] text-sm">〜テキストアドベンチャーRPG〜</p>
+          <p className="text-[#9CA3AF] text-sm mb-3">〜テキストアドベンチャーRPG〜</p>
+          <p className="text-[#9CA3AF] text-sm leading-relaxed mb-3">
+            AIが生成するダンジョンを探索しよう！モンスターを倒してアイテムを集め、どこまで深く潜れるか挑戦。
+          </p>
+          <Link
+            href="/how-to-play"
+            className="inline-block text-xs text-[#A78BFA] border border-[#4C1D95] hover:bg-[#1E1533] px-3 py-1.5 rounded-lg transition-colors"
+          >
+            遊び方を見る
+          </Link>
         </div>
 
         {/* シナリオ選択 */}
@@ -58,10 +68,6 @@ export default function HomePage() {
           </button>
         )}
 
-        {/* 広告枠 */}
-        <div className="mt-8 text-center text-xs text-[#4C1D95] border border-dashed border-[#4C1D95] rounded p-2">
-          広告
-        </div>
       </main>
 
       {showLoad && (

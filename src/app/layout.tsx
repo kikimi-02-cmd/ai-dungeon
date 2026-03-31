@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'AIダンジョン | テキストアドベンチャーRPG',
@@ -17,8 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         />
       </head>
-      <body className="bg-[#0F0A1A] text-[#E5E7EB] min-h-screen">
+      <body className="bg-[#0F0A1A] text-[#E5E7EB] min-h-screen flex flex-col">
         {children}
+        <Footer />
       </body>
     </html>
   );
