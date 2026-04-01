@@ -16,7 +16,6 @@ export default function StoryDisplay({ text, onComplete }: Props) {
   const indexRef = useRef(0);
 
   useEffect(() => {
-    // テキストが変わったらリセット
     setDisplayed('');
     setDone(false);
     indexRef.current = 0;
@@ -46,17 +45,22 @@ export default function StoryDisplay({ text, onComplete }: Props) {
   };
 
   return (
-    <div
-      className="bg-[#1E1533] border border-[#4C1D95] rounded-xl p-5 min-h-[200px] cursor-pointer select-none"
-      onClick={skipToEnd}
-    >
-      <p className="text-[#E5E7EB] leading-relaxed text-sm whitespace-pre-wrap">
-        {displayed}
-        {!done && <span className="animate-pulse text-[#A78BFA]">▌</span>}
-      </p>
-      {!done && (
-        <p className="text-xs text-[#6B7280] mt-3 text-right">タップでスキップ</p>
-      )}
+    <div className="flex items-start gap-2">
+      <div className="w-8 h-8 rounded-full bg-[#4C1D95] flex items-center justify-center text-sm shrink-0 mt-1">
+        🧙
+      </div>
+      <div
+        className="bg-[#1E1533] border border-[#4C1D95]/60 rounded-2xl rounded-tl-none px-4 py-3 flex-1 cursor-pointer"
+        onClick={skipToEnd}
+      >
+        <p className="text-[#E5E7EB] leading-relaxed text-sm whitespace-pre-wrap">
+          {displayed}
+          {!done && <span className="animate-pulse text-[#A78BFA]">▌</span>}
+        </p>
+        {!done && (
+          <p className="text-xs text-[#6B7280] mt-2 text-right">タップでスキップ</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -28,14 +28,9 @@ export default function EndingScreen({ node, status, nodeCount, scenarioName, on
   const colors = endingColors[type];
 
   const shareText = [
-    'AIダンジョン 🗡',
-    '',
-    `「${scenarioName}」${endingShortLabels[type]} End`,
-    '',
-    `エンディング: ${node.endingName ?? '？'}`,
-    '',
-    `HP: ${status.hp} / アイテム: ${status.items.length}個`,
-    '',
+    'AIダンジョン ⚔️',
+    `「${scenarioName}」${endingShortLabels[type]} End ─ ${node.endingName ?? '？'}`,
+    '#AIダンジョン #ブラウザゲーム',
     'https://ai-dungeon-coral.vercel.app/',
   ].join('\n');
 

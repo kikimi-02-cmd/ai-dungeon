@@ -55,3 +55,8 @@ export interface GameState {
   playerStatus: PlayerStatus;
   playTime: number;
 }
+
+export interface LogEntry {
+  type: 'ai' | 'choice';
+  text: string;
+}
