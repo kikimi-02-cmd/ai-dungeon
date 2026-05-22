@@ -1,12 +1,39 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Footer from "@/components/Footer";
 
+const SITE_URL = "https://ai-dungeon-coral.vercel.app";
+
 export const metadata: Metadata = {
-  title: "AIダンジョン | テキストアドベンチャーRPG",
+  metadataBase: new URL(SITE_URL),
+  title: "AIダンジョン | AIが紡ぐテキストアドベンチャーRPG",
   description:
-    "選択肢を選んでストーリーを進めるテキストアドベンチャー。5つのシナリオ、マルチエンディング。セーブ機能付き。",
+    "AIが物語を生成するテキストアドベンチャーRPG。5つの物語シナリオと、何度でも違う冒険になるAI無限ダンジョン。デイリーダンジョン・エンディング図鑑・実績つき。完全無料・登録不要。",
   manifest: "/manifest.json",
+  applicationName: "AIダンジョン",
+  icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
+  appleWebApp: { capable: true, title: "AIダンジョン", statusBarStyle: "black-translucent" },
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: SITE_URL,
+    siteName: "AIダンジョン",
+    title: "AIダンジョン | AIが紡ぐテキストアドベンチャーRPG",
+    description:
+      "AIが物語を生成するテキストアドベンチャーRPG。毎日プレイしたくなる無限ダンジョンとデイリーチャレンジ。完全無料・登録不要。",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AIダンジョン | AIが紡ぐテキストアドベンチャーRPG",
+    description:
+      "AIが物語を生成するテキストアドベンチャーRPG。毎日違う冒険が待つ無限ダンジョン。完全無料・登録不要。",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0912",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -17,6 +44,12 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9336081041068058"
@@ -34,7 +67,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-[#0F0A1A] text-[#E5E7EB] min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col">
         {children}
         <Footer />
       </body>
