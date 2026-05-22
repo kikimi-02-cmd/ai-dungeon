@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { SaveData } from '@/lib/types';
 import { getSaveData, saveGame, deleteSave, getSlotNumbers } from '@/lib/storage';
+import { getScenario } from '@/lib/game';
 
 interface Props {
   mode: 'save' | 'load';
@@ -13,6 +14,7 @@ interface Props {
 
 export default function SaveLoadModal({ mode, currentSaveData, onLoad, onClose }: Props) {
   const [saves, setSaves] = useState<SaveData[]>([]);
+  const [notice, setNotice] = useState('');
 
   useEffect(() => {
     setSaves(getSaveData());
@@ -22,8 +24,8 @@ export default function SaveLoadModal({ mode, currentSaveData, onLoad, onClose }
     if (!currentSaveData) return;
     saveGame({ slot, ...currentSaveData });
     setSaves(getSaveData());
-    alert(`スロット${slot}にセーブしました`);
-    onClose();
+    setNotice(`スロット${slot}にセーブしました`);
+    setTimeout(onClose, 700);
   };
 
   const handleDelete = (slot: number) => {
@@ -38,51 +40,73 @@ export default function SaveLoadModal({ mode, currentSaveData, onLoad, onClose }
     return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
   };
 
-  const formatTime = (sec: number) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}分${s}秒`;
-  };
+  const formatTime = (sec: number) => `${Math.floor(sec / 60)}分${sec % 60}秒`;
+
+  const scenarioName = (id: string) => getScenario(id)?.name ?? id;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
-      <div className="bg-[#1E1533] border border-[#4C1D95] rounded-2xl p-6 w-full max-w-sm">
+    <div
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 px-4 anim-fade"
+      onClick={onClose}
+    >
+      <div
+        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[#A78BFA] font-bold text-lg">
+          <h2 className="font-serif-jp text-[var(--accent)] font-bold text-lg">
             {mode === 'save' ? '💾 セーブ' : '📂 ロード'}
           </h2>
-          <button onClick={onClose} className="text-[#6B7280] hover:text-[#E5E7EB] text-xl">✕</button>
+          <button
+            onClick={onClose}
+            className="text-[var(--text-faint)] hover:text-[var(--text)] text-xl leading-none"
+          >
+            ✕
+          </button>
         </div>
-        <div className="space-y-3">
+
+        {notice && (
+          <p className="text-xs text-[var(--accent)] text-center mb-3">{notice}</p>
+        )}
+
+        <div className="space-y-2.5">
           {getSlotNumbers().map((slot) => {
             const save = getSave(slot);
             return (
-              <div key={slot} className="bg-[#0F0A1A] border border-[#4C1D95] rounded-xl p-3">
+              <div
+                key={slot}
+                className="bg-[var(--bg-sunken)] border border-[var(--border-soft)] rounded-xl p-3"
+              >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[#A78BFA] font-bold text-sm">スロット {slot}</span>
+                  <span className="text-[var(--accent)] font-bold text-sm">スロット {slot}</span>
                   {save && (
                     <button
                       onClick={() => handleDelete(slot)}
-                      className="text-xs text-[#EF4444] hover:underline"
+                      className="text-xs text-[var(--hp-low)] hover:underline"
                     >
                       削除
                     </button>
                   )}
                 </div>
                 {save ? (
-                  <div className="text-xs text-[#9CA3AF]">
-                    <p>{save.scenarioId} — {save.playerStatus.name}</p>
-                    <p>HP: {save.playerStatus.hp} / プレイ時間: {formatTime(save.playTime)}</p>
-                    <p>{formatDate(save.savedAt)}</p>
+                  <div className="text-xs text-[var(--text-dim)] space-y-0.5">
+                    <p className="text-[var(--text)]">
+                      {scenarioName(save.scenarioId)} — {save.playerStatus.name}
+                    </p>
+                    <p>
+                      HP {save.playerStatus.hp} ／ プレイ時間 {formatTime(save.playTime)}
+                    </p>
+                    <p className="text-[var(--text-faint)]">{formatDate(save.savedAt)}</p>
                   </div>
                 ) : (
-                  <p className="text-xs text-[#6B7280]">空きスロット</p>
+                  <p className="text-xs text-[var(--text-faint)]">空きスロット</p>
                 )}
-                <div className="mt-2 flex gap-2">
+                <div className="mt-2.5">
                   {mode === 'save' && (
                     <button
                       onClick={() => handleSave(slot)}
-                      className="flex-1 text-xs bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg py-1.5 transition-colors"
+                      className="w-full text-xs font-bold rounded-lg py-2 transition-all active:scale-[0.98]"
+                      style={{ background: 'var(--accent)', color: 'var(--accent-ink)' }}
                     >
                       ここにセーブ
                     </button>
@@ -90,9 +114,10 @@ export default function SaveLoadModal({ mode, currentSaveData, onLoad, onClose }
                   {mode === 'load' && save && (
                     <button
                       onClick={() => onLoad(save)}
-                      className="flex-1 text-xs bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg py-1.5 transition-colors"
+                      className="w-full text-xs font-bold rounded-lg py-2 transition-all active:scale-[0.98]"
+                      style={{ background: 'var(--accent)', color: 'var(--accent-ink)' }}
                     >
-                      ロード
+                      この記録から再開
                     </button>
                   )}
                 </div>

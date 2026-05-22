@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
+/* ===== デザイントークン ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 背景：フラットな黒ではなく、深い藍墨色のグラデーション基調 */
+  --bg: #0a0912;
+  --bg-elev: #15121f;
+  --bg-card: #1b1729;
+  --bg-sunken: #100d1a;
+  --border: #2f2842;
+  --border-soft: #251f36;
+
+  --text: #ece9f4;
+  --text-dim: #a39bb8;
+  --text-faint: #6f6786;
+
+  /* アクセント（世界ごとに data-world で上書き） */
+  --accent: #c9a24b;
+  --accent-ink: #1a1408;
+  --glow: rgba(201, 162, 75, 0.26);
+
+  --hp-good: #4caf7d;
+  --hp-warn: #e0a13a;
+  --hp-low: #d9534f;
+
+  --font-serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-world="lost-crown"]   { --accent: #d8b04a; --glow: rgba(216,176,74,0.26); }
+[data-world="space-drift"]  { --accent: #4fb8d8; --glow: rgba(79,184,216,0.26); }
+[data-world="ghost-mansion"]{ --accent: #c44a63; --glow: rgba(196,74,99,0.26); }
+[data-world="dragon-boy"]   { --accent: #43b189; --glow: rgba(67,177,137,0.26); }
+[data-world="tokyo-mystery"]{ --accent: #dd9140; --glow: rgba(221,145,64,0.26); }
+
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--bg);
+  color: var(--text);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  /* 上下にほのかな光と影を落として奥行きを出す */
+  background:
+    radial-gradient(120% 60% at 50% -10%, rgba(120, 96, 180, 0.10), transparent 60%),
+    radial-gradient(120% 50% at 50% 110%, var(--glow), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 物語本文に使うセリフ体 */
+.font-serif-jp {
+  font-family: var(--font-serif);
+  font-feature-settings: "palt";
+  letter-spacing: 0.02em;
+}
+
+/* ===== アニメーション ===== */
+@keyframes fadeRise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-rise { animation: fadeRise 0.5s ease-out both; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.anim-fade { animation: fadeIn 0.6s ease-out both; }
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.06); }
+}
+.anim-glow { animation: glowPulse 3.4s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* タイトルの金箔風グラデーション文字 */
+.title-foil {
+  background: linear-gradient(100deg, var(--accent), #fff4d6 45%, var(--accent) 70%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* スクロールバー */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
 }

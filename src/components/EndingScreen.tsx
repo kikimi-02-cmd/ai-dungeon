@@ -1,117 +1,176 @@
 'use client';
 
-import { useState } from 'react';
-import { StoryNode, PlayerStatus } from '@/lib/types';
+import { useState, useEffect, useRef } from 'react';
+import { EndingType } from '@/lib/types';
+import { recordEnding, recordDailyClear, Achievement } from '@/lib/progress';
 import CrossPromo from '@/components/CrossPromo';
+import AdUnit from '@/components/AdUnit';
 
-interface Props {
-  node: StoryNode;
-  status: PlayerStatus;
-  nodeCount: number;
-  scenarioName: string;
-  onReplay: () => void;
-  onChangeScenario: () => void;
+interface Stat {
+  label: string;
+  value: string;
 }
 
-const endingColors = {
-  good: { bg: 'border-[#10B981]', badge: 'bg-[#10B981]', title: 'text-[#10B981]' },
-  normal: { bg: 'border-[#3B82F6]', badge: 'bg-[#3B82F6]', title: 'text-[#3B82F6]' },
-  bad: { bg: 'border-[#EF4444]', badge: 'bg-[#EF4444]', title: 'text-[#EF4444]' },
+interface Props {
+  endingType: EndingType;
+  endingName: string;
+  text: string;
+  scenarioId: string;
+  scenarioName: string;
+  stats: Stat[];
+  dailyDate?: string | null;
+  replayLabel?: string;
+  onReplay: () => void;
+  onHome: () => void;
+}
+
+const endingStyle: Record<EndingType, { label: string; color: string }> = {
+  good: { label: 'GOOD END', color: 'var(--hp-good)' },
+  normal: { label: 'NORMAL END', color: '#5b9bd5' },
+  bad: { label: 'BAD END', color: 'var(--hp-low)' },
 };
 
-const endingLabels = { good: 'GOOD END', normal: 'NORMAL END', bad: 'BAD END' };
-const endingShortLabels = { good: 'Good', normal: 'Normal', bad: 'Bad' };
+const SITE_URL = 'https://ai-dungeon-coral.vercel.app/';
 
-export default function EndingScreen({ node, status, nodeCount, scenarioName, onReplay, onChangeScenario }: Props) {
+export default function EndingScreen({
+  endingType,
+  endingName,
+  text,
+  scenarioId,
+  scenarioName,
+  stats,
+  dailyDate,
+  replayLabel = 'もう一度挑戦する',
+  onReplay,
+  onHome,
+}: Props) {
   const [copied, setCopied] = useState(false);
-  const type = node.endingType ?? 'normal';
-  const colors = endingColors[type];
+  const [isNew, setIsNew] = useState(false);
+  const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
+  const recorded = useRef(false);
 
+  useEffect(() => {
+    if (recorded.current) return;
+    recorded.current = true;
+    const result = recordEnding(scenarioId, scenarioName, endingType, endingName);
+    setIsNew(result.isNewEnding);
+    setNewAchievements(result.newAchievements);
+    if (dailyDate) recordDailyClear(dailyDate);
+  }, [scenarioId, scenarioName, endingType, endingName, dailyDate]);
+
+  const style = endingStyle[endingType];
   const shareText = [
-    'AIダンジョン ⚔️',
-    `「${scenarioName}」${endingShortLabels[type]} End ─ ${node.endingName ?? '？'}`,
+    'AIダンジョン ⚔',
+    `「${scenarioName}」${style.label} ─ ${endingName}`,
+    dailyDate ? `📅 ${dailyDate} のデイリーダンジョン` : '',
     '#AIダンジョン #ブラウザゲーム',
-    'https://ai-dungeon-coral.vercel.app/',
-  ].join('\n');
+    SITE_URL,
+  ]
+    .filter(Boolean)
+    .join('\n');
 
-  function handleShare() {
-    navigator.clipboard.writeText(shareText).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {/* ignore */});
-  }
+  const handleCopy = () => {
+    navigator.clipboard
+      .writeText(shareText)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {});
+  };
 
-  function handleXShare() {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
+  const handleXShare = () => {
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
+  };
 
   return (
-    <div className={`bg-[#1E1533] border-2 ${colors.bg} rounded-2xl p-6 space-y-5`}>
-      {/* エンディングタイプ */}
+    <div
+      className="rounded-2xl p-6 space-y-5 anim-rise bg-[var(--bg-card)]"
+      style={{ border: `2px solid ${style.color}` }}
+    >
       <div className="text-center">
-        <span className={`inline-block px-4 py-1 rounded-full text-white text-sm font-bold ${colors.badge}`}>
-          {endingLabels[type]}
+        <span
+          className="inline-block px-4 py-1 rounded-full text-white text-xs font-bold tracking-widest"
+          style={{ background: style.color }}
+        >
+          {style.label}
         </span>
-        <h2 className={`mt-3 text-2xl font-bold ${colors.title}`}>{node.endingName}</h2>
+        <h2
+          className="mt-3 font-serif-jp text-2xl font-bold"
+          style={{ color: style.color }}
+        >
+          {endingName}
+        </h2>
+        {isNew && (
+          <p className="mt-1.5 text-xs text-[var(--accent)]">✨ 図鑑に新しい結末を記録しました</p>
+        )}
       </div>
 
-      {/* ストーリーテキスト */}
-      <p className="text-[#E5E7EB] text-sm leading-relaxed whitespace-pre-wrap">{node.text}</p>
+      <p className="font-serif-jp text-[var(--text)] text-[15px] leading-[1.95] whitespace-pre-wrap">
+        {text}
+      </p>
 
-      {/* プレイ統計 */}
-      <div className="bg-[#0F0A1A] rounded-xl p-4 space-y-1 text-sm">
-        <p className="text-[#A78BFA] font-bold mb-2">📊 プレイ統計</p>
-        <p className="text-[#9CA3AF]">冒険者名: <span className="text-[#E5E7EB]">{status.name}</span></p>
-        <p className="text-[#9CA3AF]">残りHP: <span className="text-[#EF4444]">{status.hp}</span></p>
-        <p className="text-[#9CA3AF]">選択数: <span className="text-[#E5E7EB]">{nodeCount}</span></p>
-        <p className="text-[#9CA3AF]">所持アイテム: <span className="text-[#F59E0B]">{status.items.join('、') || 'なし'}</span></p>
+      <div className="bg-[var(--bg-sunken)] rounded-xl p-4 space-y-1.5 text-sm">
+        <p className="text-[var(--accent)] font-bold mb-1">📊 冒険の記録</p>
+        {stats.map((s) => (
+          <p key={s.label} className="text-[var(--text-dim)] flex justify-between">
+            <span>{s.label}</span>
+            <span className="text-[var(--text)]">{s.value}</span>
+          </p>
+        ))}
       </div>
 
-      {/* シェアボタン */}
+      {newAchievements.length > 0 && (
+        <div className="bg-[var(--accent)]/10 border border-[var(--accent)]/35 rounded-xl p-4 space-y-2">
+          <p className="text-[var(--accent)] font-bold text-sm">🏆 実績を解除！</p>
+          {newAchievements.map((a) => (
+            <div key={a.id} className="flex items-center gap-2.5">
+              <span className="text-xl">{a.icon}</span>
+              <div>
+                <p className="text-[var(--text)] text-sm font-bold">{a.name}</p>
+                <p className="text-[var(--text-dim)] text-xs">{a.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="flex gap-2">
         <button
-          onClick={handleShare}
-          className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-colors"
+          onClick={handleCopy}
+          className="flex-1 py-2.5 rounded-xl bg-[var(--bg-elev)] border border-[var(--border)] hover:border-[var(--accent)]/50 text-[var(--text)] font-bold text-sm transition-colors"
         >
-          {copied ? 'コピーしました！' : '結果をシェア'}
+          {copied ? 'コピーしました！' : '結果をコピー'}
         </button>
         <button
           onClick={handleXShare}
-          className="flex-1 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-600 text-white font-bold text-sm transition-colors"
+          className="flex-1 py-2.5 rounded-xl bg-black border border-[var(--border)] hover:border-[var(--text-dim)] text-white font-bold text-sm transition-colors"
         >
           𝕏 でシェア
         </button>
       </div>
 
-      {/* ボタン */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <button
           onClick={onReplay}
-          className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold py-3 rounded-xl transition-colors"
+          className="w-full font-bold py-3 rounded-xl transition-all active:scale-[0.99]"
+          style={{ background: 'var(--accent)', color: 'var(--accent-ink)' }}
         >
-          もう一度プレイ
+          {replayLabel}
         </button>
         <button
-          onClick={onChangeScenario}
-          className="w-full border border-[#4C1D95] text-[#A78BFA] hover:bg-[#4C1D95] font-bold py-3 rounded-xl transition-colors"
+          onClick={onHome}
+          className="w-full border border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--accent)] hover:border-[var(--accent)]/45 font-bold py-3 rounded-xl transition-colors"
         >
-          別のシナリオへ
+          トップへ戻る
         </button>
       </div>
 
-      {/* 広告 */}
-      <div className="overflow-hidden">
-        <ins
-          className="adsbygoogle"
-          style={{ display: 'block' }}
-          data-ad-client="ca-pub-9336081041068058"
-          data-ad-slot="auto"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
-      </div>
-
+      <AdUnit />
       <CrossPromo />
     </div>
   );

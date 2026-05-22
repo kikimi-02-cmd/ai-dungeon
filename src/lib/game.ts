@@ -21,6 +21,25 @@ export function getStartNode(scenario: Scenario): StoryNode {
   return node;
 }
 
+// HPが尽きたときのエンディングノード。
+// シナリオ固有のバッドエンドがあればそれを、なければ汎用ノードを返す。
+const GENERIC_GAME_OVER: StoryNode = {
+  id: '__gameover__',
+  text: 'HPが尽き、意識が深い闇へと沈んでいく。冷たい静寂の中で、最後に思い浮かんだのは、ここまで歩んできた道のりだった。この冒険は、ここで幕を閉じる――。',
+  choices: [],
+  isEnding: true,
+  endingType: 'bad',
+  endingName: '力尽きた冒険者',
+};
+
+export function getGameOverNode(scenario: Scenario): StoryNode {
+  if (scenario.badEndingNodeId) {
+    const node = getNode(scenario, scenario.badEndingNodeId);
+    if (node) return node;
+  }
+  return GENERIC_GAME_OVER;
+}
+
 export function initPlayerStatus(name: string): PlayerStatus {
   return { name, hp: 100, maxHp: 100, items: [], flags: [] };
 }

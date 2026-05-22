@@ -8,8 +8,10 @@ const apps = [
 
 export default function CrossPromo() {
   return (
-    <div className="mt-8 border-t border-[#4C1D95] pt-6">
-      <p className="text-xs font-semibold text-[#A78BFA] mb-3 text-center">おすすめアプリ</p>
+    <div className="mt-8 border-t border-[var(--border-soft)] pt-6">
+      <p className="text-xs font-semibold text-[var(--text-dim)] mb-3 text-center">
+        ほかのアプリもどうぞ
+      </p>
       <div className="flex flex-wrap gap-2 justify-center">
         {apps.map((app) => (
           <a
@@ -17,7 +19,7 @@ export default function CrossPromo() {
             href={app.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-[#A78BFA] border border-[#4C1D95] rounded-full px-3 py-1 hover:bg-[#4C1D95] transition-colors"
+            className="text-xs text-[var(--text-dim)] border border-[var(--border)] rounded-full px-3 py-1 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] transition-colors"
           >
             {app.name}
           </a>
