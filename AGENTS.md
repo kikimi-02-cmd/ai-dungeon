@@ -2,7 +2,7 @@
 
 このセッションには `tetsuya-os-canon` が attach されている前提。session 開始時に以下を必ず Read してルールに従う:
 
-- `tetsuya-os-canon/AGENTS.md` (#1-#56 絶対ルール、特に **#56 Council orchestration 強制**)
+- `tetsuya-os-canon/AGENTS.md` (#1-#60 絶対ルール ※実効約26・ルールダイエット済、特に **#56 Council orchestration 強制**)
 - `tetsuya-os-canon/protocols/council-orchestration-v1.md` (Claude orchestrator 契約)
 - `tetsuya-os-canon/protocols/operator-runbook-daily-v1.md` §0 (operator discipline 鉄則)
 
