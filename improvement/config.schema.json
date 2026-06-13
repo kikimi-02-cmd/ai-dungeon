@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UAIF config v1",
+  "description": "Per-product auto-improvement config. SoT: canon protocols/auto-improvement-v1.md",
+  "type": "object",
+  "required": ["schema", "product", "enabled", "mode", "autonomy", "north_star", "guardrails", "verify"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "uaif/config-v1" },
+    "product": { "type": "string" },
+    "enabled": { "type": "boolean", "description": "runtime kill switch. default false." },
+    "mode": { "enum": ["shadow", "live"], "description": "shadow=DRAFT PR only; live=autonomy tiers" },
+    "autonomy": { "enum": ["conservative", "balanced", "aggressive"], "default": "balanced" },
+    "cadence_cron": { "type": "string", "description": "weekly, staggered per repo" },
+    "north_star": { "type": "string", "description": "the single metric the loop optimizes" },
+    "guardrails": { "type": "array", "items": { "type": "string" }, "description": "must-not-regress invariants" },
+    "verify": {
+      "type": "object",
+      "properties": {
+        "install": { "type": "string" },
+        "build": { "type": "string" },
+        "lint": { "type": "string" },
+        "test": { "type": "string" },
+        "typecheck": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "telemetry": { "type": "array", "items": { "type": "string" }, "description": "Reflect engine data sources" },
+    "token_budget_usd": { "type": "number", "default": 2.0 },
+    "max_open_prs": { "type": "integer", "default": 1 },
+    "irreversible_keywords": { "type": "array", "items": { "type": "string" }, "description": "T2 → Council triggers" },
+    "council_route": { "type": "string", "default": "honnex.app/admin/council" }
+  }
+}
