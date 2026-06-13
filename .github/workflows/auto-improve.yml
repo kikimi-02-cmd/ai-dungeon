@@ -1,0 +1,80 @@
+# UAIF — Universal Auto-Improvement loop (canon protocols/auto-improvement-v1.md の実装複製)
+#
+# 安全弁:
+#  1) scheduled は default ブランチでのみ発火 → feature ブランチ上ではこのファイルは不活性。
+#  2) ジョブ冒頭で improvement/config.json の enabled を確認し false なら即終了 (runtime gate)。
+#  3) config.mode=="shadow" の間は skill が DRAFT PR のみ開き auto-merge しない。
+#
+# enable 前に確認すること:
+#  - リポ secrets に ANTHROPIC_API_KEY (任意で TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID)。
+#  - anthropics/claude-code-action のバージョン/入力が現行か (action は進化が速い)。
+#  - improvement/config.json の enabled / mode / cadence_cron / north_star を設定済みか。
+name: auto-improve
+
+on:
+  schedule:
+    # 週次。リポごとに分散 (stagger) させ PR 洪水を防ぐ。instantiate 時に上書きされる。
+    - cron: '0 21 * * 1'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'shadow (DRAFT PR only) / live (autonomy tiers)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      # runtime kill switch: config.enabled が true でなければ即終了 (course)
+      - name: Enabled guard
+        id: guard
+        run: |
+          if [ ! -f improvement/config.json ]; then
+            echo "::warning::improvement/config.json missing — skipping"
+            echo "go=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          enabled=$(node -e "process.stdout.write(String(require('./improvement/config.json').enabled===true))")
+          echo "go=$enabled" >> "$GITHUB_OUTPUT"
+          if [ "$enabled" != "true" ]; then
+            echo "UAIF disabled for this repo (improvement/config.json enabled=false). Exiting cleanly."
+          fi
+
+      - name: Setup Node
+        if: steps.guard.outputs.go == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 自己改善ループ本体。full Claude Code が repo を読み /improve skill を実行し PR を開く。
+      # NOTE: action のバージョン/入力名は enable 時に最新を確認すること。
+      - name: Run UAIF loop
+        if: steps.guard.outputs.go == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Run the UAIF improve loop. The recipe is improvement/improve.skill.md
+            (also installed as the /improve skill where .claude/skills is writable).
+            Read improvement/config.json first; if enabled!==true, stop immediately.
+            Honor config.mode (shadow=DRAFT PR only) and the T0/T1/T2 autonomy gates.
+            Workflow dispatch mode override (if any): ${{ github.event.inputs.mode }}
+
+      - name: Notify on failure (optional)
+        if: failure() && steps.guard.outputs.go == 'true'
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -z "$TELEGRAM_BOT_TOKEN" ] && exit 0
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d text="⚠️ UAIF auto-improve failed in ${{ github.repository }} | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true

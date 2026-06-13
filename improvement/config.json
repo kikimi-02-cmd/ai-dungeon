@@ -1,0 +1,28 @@
+{
+  "schema": "uaif/config-v1",
+  "product": "ai-dungeon",
+  "enabled": true,
+  "mode": "live",
+  "autonomy": "balanced",
+  "cadence_cron": "0 21 * * 0",
+  "north_star": "1セッションあたりの平均選択肢クリック数（ストーリー継続率）",
+  "guardrails": [
+    "セーブデータは localStorage のみ — サーバー保存・外部 DB 導入は禁止",
+    "ストーリーデータは JSON ファイル管理（MVP）— 構造変更時は既存セーブと後方互換を維持",
+    "Claude API キー（ANTHROPIC_API_KEY）はサーバーサイドのみ — クライアントに露出しない",
+    "TypeScript strict モード維持 — any 型禁止",
+    "マルチエンディング分岐ロジックは純粋関数で実装 — 副作用を持ち込まない"
+  ],
+  "verify": {
+    "install": "npm ci",
+    "build": "npm run build",
+    "lint": "npm run lint",
+    "test": "",
+    "typecheck": ""
+  },
+  "telemetry": ["recent commits", "open issues", "lint", "UX 静的診断"],
+  "token_budget_usd": 1.5,
+  "max_open_prs": 1,
+  "irreversible_keywords": ["price", "pricing", "payment", "delete", "drop table", "schema", "auth", "public claim", "spend", "ANTHROPIC_API_KEY"],
+  "council_route": "honnex.app/admin/council"
+}
