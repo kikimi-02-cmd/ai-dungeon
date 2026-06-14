@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { EndingType } from '@/lib/types';
 import { recordEnding, recordDailyClear, Achievement } from '@/lib/progress';
+import { trackEvent } from '@/lib/gtag';
 import CrossPromo from '@/components/CrossPromo';
 import AdUnit from '@/components/AdUnit';
 
@@ -80,6 +81,12 @@ export default function EndingScreen({
   };
 
   const handleXShare = () => {
+    trackEvent('share', {
+      method: 'twitter',
+      scenario_id: scenarioId,
+      ending_type: endingType,
+      is_daily: Boolean(dailyDate),
+    });
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
       '_blank',
