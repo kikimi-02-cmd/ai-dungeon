@@ -10,6 +10,7 @@ import { getDailyDate, getDailyWorld, getDailyModifier, DailyModifier } from '@/
 import { getWorldBible, WorldBible } from '@/lib/worldBibles';
 import { Scenario, SaveData, AIGameSave, ProgressData } from '@/lib/types';
 import { getTheme } from '@/lib/theme';
+import { trackEvent } from '@/lib/gtag';
 import Header from '@/components/Header';
 import NameInputModal from '@/components/NameInputModal';
 
@@ -55,6 +56,10 @@ export default function HomePage() {
     if (!pending) return;
     localStorage.setItem(NAME_KEY, name);
     recordRunStart();
+    trackEvent('game_start', {
+      mode: pending.mode,
+      scenario_id: pending.scenario?.id ?? (pending.mode === 'daily' ? daily?.date : undefined),
+    });
     const p = encodeURIComponent(name);
     if (pending.mode === 'static' && pending.scenario) {
       router.push(`/play?scenarioId=${pending.scenario.id}&playerName=${p}`);

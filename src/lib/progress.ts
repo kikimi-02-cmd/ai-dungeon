@@ -1,5 +1,6 @@
 import { ProgressData, EndingType, UnlockedEnding } from '@/lib/types';
 import { getAllScenarios } from '@/lib/game';
+import { trackEvent } from '@/lib/gtag';
 
 const PROGRESS_KEY = 'ai-dungeon-progress';
 
@@ -158,6 +159,13 @@ export function recordEnding(
   }
   p.achievements = recomputeAchievements(p);
   save(p);
+
+  trackEvent('clear', {
+    scenario_id: scenarioId,
+    scenario_name: scenarioName,
+    ending_type: endingType,
+    is_new_ending: isNewEnding,
+  });
 
   const newAchievements = ACHIEVEMENTS.filter(
     (a) => p.achievements.includes(a.id) && !before.has(a.id)
