@@ -11,7 +11,7 @@ import { recordRunStart, recordAIFloor } from '@/lib/progress';
 import Header from '@/components/Header';
 import StatusBar from '@/components/StatusBar';
 import StoryDisplay from '@/components/StoryDisplay';
-import ChoiceButtons from '@/components/ChoiceButtons';
+import FreeTextInput from '@/components/play/FreeTextInput';
 import ItemModal from '@/components/ItemModal';
 import EndingScreen from '@/components/EndingScreen';
 import ChatLog from '@/components/play/ChatLog';
@@ -230,23 +230,30 @@ export default function AIPlay() {
 
   const isEnding = current?.isEnding === true;
 
-  const handleChoice = (i: number) => {
+  const handleSubmit = (text: string) => {
     if (loading || !current) return;
     runTurn({
       fromNode: current,
-      choiceText: current.choices[i],
+      choiceText: text,
       baseStatus: status,
       baseFloor: floor,
       baseHistory: history,
     });
   };
 
-  return (
-    <div data-world={world.id} className="h-dvh flex flex-col">
-      <Header scenarioName={`${world.emoji} ${world.name}`} />
-      <StatusBar status={status} floor={floor} onItemsClick={() => setShowItems(true)} />
+  // 行動のヒント：AIが返した行動例があればそれを、無ければ世界の初期行動例を使う
+  const suggestions =
+    current && current.choices.length > 0 ? current.choices : world.sampleActions;
 
-      <div className="flex-1 overflow-y-auto">
+  return (
+    <div data-world={world.id} className="min-h-dvh flex flex-col">
+      {/* 上部固定：ヘッダー＋HPバー（スクロールしても追従する） */}
+      <div className="sticky top-0 z-30">
+        <Header scenarioName={`${world.emoji} ${world.name}`} />
+        <StatusBar status={status} floor={floor} onItemsClick={() => setShowItems(true)} />
+      </div>
+
+      <main className="flex-1">
         <div className="max-w-2xl mx-auto w-full px-4 pt-4 pb-4 space-y-4">
           {/* デイリー表示 */}
           {cfg?.daily && (
@@ -256,6 +263,17 @@ export default function AIPlay() {
               </p>
             </div>
           )}
+
+          {/* 物語のはじまり：プレイヤーが何を考えればいいかの起点 */}
+          <div className="bg-[var(--bg-card)] border border-[var(--accent)]/30 rounded-xl p-4 anim-fade">
+            <p className="text-xs font-bold text-[var(--accent)] mb-1.5">📜 物語のはじまり</p>
+            <p className="font-serif-jp text-sm text-[var(--text)] leading-relaxed">
+              {world.setup}
+            </p>
+            <p className="text-xs text-[var(--text-dim)] mt-2.5">
+              <span className="text-[var(--accent)] font-bold">🎯 目的</span>　{world.objective}
+            </p>
+          </div>
 
           <ChatLog log={chatLog} />
 
@@ -330,13 +348,17 @@ export default function AIPlay() {
 
           <div ref={bottomRef} />
         </div>
-      </div>
+      </main>
 
-      {/* 選択肢 */}
-      {current && !isEnding && !loading && !error && textDone && current.choices.length > 0 && (
-        <div className="shrink-0 border-t border-[var(--border)] bg-[var(--bg-sunken)]/95 backdrop-blur px-4 py-3">
+      {/* 下部固定：フリーテキスト入力（選択肢ではなく自由に行動を書ける） */}
+      {current && !isEnding && (
+        <div className="sticky bottom-0 z-20 border-t border-[var(--border)] bg-[var(--bg-sunken)]/95 backdrop-blur px-4 py-3">
           <div className="max-w-2xl mx-auto">
-            <ChoiceButtons choices={current.choices} onSelect={handleChoice} />
+            <FreeTextInput
+              onSubmit={handleSubmit}
+              suggestions={suggestions}
+              disabled={loading || !!error}
+            />
           </div>
         </div>
       )}
