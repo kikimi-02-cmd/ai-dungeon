@@ -156,15 +156,18 @@ export default function StaticPlay() {
     : getAvailableChoices(currentNode, playerStatus);
 
   return (
-    <div data-world={scenario.id} className="h-dvh flex flex-col">
-      <Header scenarioName={scenario.name} />
-      <StatusBar
-        status={playerStatus}
-        onItemsClick={() => setShowItems(true)}
-        onSaveClick={() => setShowSave(true)}
-      />
+    <div data-world={scenario.id} className="min-h-dvh flex flex-col">
+      {/* 上部固定：ヘッダー＋HPバー（スクロールしても追従する） */}
+      <div className="sticky top-0 z-30">
+        <Header scenarioName={scenario.name} />
+        <StatusBar
+          status={playerStatus}
+          onItemsClick={() => setShowItems(true)}
+          onSaveClick={() => setShowSave(true)}
+        />
+      </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <main className="flex-1">
         <div className="max-w-2xl mx-auto w-full px-4 pt-4 pb-4 space-y-4">
           <ChatLog log={chatLog} />
 
@@ -208,10 +211,10 @@ export default function StaticPlay() {
 
           <div ref={bottomRef} />
         </div>
-      </div>
+      </main>
 
       {!isEnding && textDone && availableChoices.length > 0 && (
-        <div className="shrink-0 border-t border-[var(--border)] bg-[var(--bg-sunken)]/95 backdrop-blur px-4 py-3">
+        <div className="sticky bottom-0 z-20 border-t border-[var(--border)] bg-[var(--bg-sunken)]/95 backdrop-blur px-4 py-3">
           <div className="max-w-2xl mx-auto">
             <ChoiceButtons
               choices={availableChoices.map((c) => c.text)}
