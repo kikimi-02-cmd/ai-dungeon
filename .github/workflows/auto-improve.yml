@@ -14,7 +14,7 @@ name: auto-improve
 on:
   schedule:
     # 週次。リポごとに分散 (stagger) させ PR 洪水を防ぐ。instantiate 時に上書きされる。
-    - cron: '0 21 * * 1'
+    - cron: '0 20 * * 6'
   workflow_dispatch:
     inputs:
       mode:
@@ -67,6 +67,18 @@ jobs:
             Read improvement/config.json first; if enabled!==true, stop immediately.
             Honor config.mode (shadow=DRAFT PR only) and the T0/T1/T2 autonomy gates.
             Workflow dispatch mode override (if any): ${{ github.event.inputs.mode }}
+
+      - name: Notify on success (what ran)
+        if: success() && steps.guard.outputs.go == 'true'
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -z "$TELEGRAM_BOT_TOKEN" ] && exit 0
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d text="✅ UAIF ran in ${{ github.repository }} — review PRs: ${{ github.server_url }}/${{ github.repository }}/pulls | run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true
 
       - name: Notify on failure (optional)
         if: failure() && steps.guard.outputs.go == 'true'
