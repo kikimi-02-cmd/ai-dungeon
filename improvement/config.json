@@ -4,7 +4,7 @@
   "enabled": true,
   "mode": "live",
   "autonomy": "balanced",
-  "cadence_cron": "0 21 * * 0",
+  "cadence_cron": "0 20 * * 6",
   "north_star": "1セッションあたりの平均選択肢クリック数（ストーリー継続率）",
   "guardrails": [
     "セーブデータは localStorage のみ — サーバー保存・外部 DB 導入は禁止",
