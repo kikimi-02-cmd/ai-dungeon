@@ -29,6 +29,7 @@ permissions:
 
 jobs:
   improve:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -91,3 +92,19 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d chat_id="${TELEGRAM_CHAT_ID}" \
             -d text="⚠️ UAIF auto-improve failed in ${{ github.repository }} | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true
+
+  # 2026-07-09 Owner 指示: Tier1 の定期 API 消費を停止。schedule 時は告知のみ、
+  # 手動実行 (workflow_dispatch) では従来どおり improve ジョブが動く。
+  announce:
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Announce manual-run (scheduled auto-run stopped for API cost)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -z "$TELEGRAM_BOT_TOKEN" ] && { echo "no telegram token; skip"; exit 0; }
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=🔧 ${{ github.repository }} の auto-improve は自動実行を停止しました (API 節約)。回す場合は Actions → auto-improve → Run workflow で手動実行してください。"
