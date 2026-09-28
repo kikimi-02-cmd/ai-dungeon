@@ -4,7 +4,7 @@ AIがゲームマスター。選択肢を選ぶとストーリーが分岐する
 
 ## Tech Stack
 
-- Next.js 14+ (App Router)
+- Next.js 16 (App Router)。破壊的変更あり — 書く前に `node_modules/next/dist/docs/` の該当ガイドを読む
 - TypeScript (strict)
 - Tailwind CSS
 - Vercel でホスティング
