@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { getWorldBible } from '@/lib/worldBibles';
 import { AINodeResponse, AITurn, EndingType } from '@/lib/types';
+import { checkAiGuard, aiGuardResponse } from '@/lib/aiGuard';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -136,6 +137,10 @@ export async function POST(req: NextRequest) {
   const floor = Number.isFinite(body.floor) ? Number(body.floor) : 1;
   const history = Array.isArray(body.history) ? body.history.slice(-20) : [];
   const modifierHint = typeof body.modifierHint === 'string' ? body.modifierHint.slice(0, 200) : '';
+
+  // 回数の上限・停止スイッチ（1 場面 = 1 回の AI 呼び出し）
+  const guard = checkAiGuard(req);
+  if (!guard.ok) return aiGuardResponse(guard);
 
   const client = new Anthropic({ apiKey });
 
